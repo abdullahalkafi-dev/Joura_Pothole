@@ -36,12 +36,25 @@ const getUserById = catchAsync(async (req: Request, res: Response) => {
   });
 });
 const updateUser = catchAsync(async (req: Request, res: Response) => {
-  const user = await UserServices.updateUser(req.params.id, req.body);
+  const userdata = JSON.parse(req.body.data);
+  let image = null;
+  if (req.files && "image" in req.files && req.files.image[0]) {
+    image = `/images/${req.files.image[0].filename}`;
+  }
+  const user = {
+    ...userdata,
+    image: image,
+  };
+  if (user.image === null) {
+    delete user.image;
+  }
+
+  const result = await UserServices.updateUser(req.params.id,user);
   sendResponse(res, {
     statusCode: StatusCodes.OK,
     success: true,
     message: "User updated successfully",
-    data: user,
+    data: result,
   });
 });
 

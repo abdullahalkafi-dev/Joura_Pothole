@@ -52,13 +52,13 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/abdullahalkafi-dev/Carpooling-App.git"
+		"url": "git+https://github.com/abdullahalkafi-dev/Joura_Pothole.git"
 	},
 	"author": "",
 	"license": "ISC",
 	"bugs": {
-		"url": "https://github.com/abdullahalkafi-dev/Carpooling-App/issues"
+		"url": "https://github.com/abdullahalkafi-dev/Joura_Pothole/issues"
 	},
-	"homepage": "https://github.com/abdullahalkafi-dev/Carpooling-App#readme",
+	"homepage": "https://github.com/abdullahalkafi-dev/Joura_Pothole#readme",
 	"description": ""
 }

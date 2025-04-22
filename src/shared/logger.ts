@@ -26,7 +26,7 @@ const myFormat = printf(
 
 const logger = createLogger({
   level: 'info',
-  format: combine(label({ label: 'CARPOOLING' }), timestamp(), myFormat),
+  format: combine(label({ label: 'JOURA_POTHOLE' }), timestamp(), myFormat),
   transports: [
     new transports.Console(),
     new DailyRotateFile({
@@ -45,7 +45,7 @@ const logger = createLogger({
 
 const errorLogger = createLogger({
   level: 'error',
-  format: combine(label({ label: 'CARPOOLING' }), timestamp(), myFormat),
+  format: combine(label({ label: 'JOURA_POTHOLE' }), timestamp(), myFormat),
   transports: [
     new transports.Console(),
     new DailyRotateFile({

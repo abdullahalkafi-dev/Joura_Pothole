@@ -11,15 +11,17 @@ const PotholeReportCacheManage = {
     reportId: (id: string) => `potholeReport:${id}`,
     reportListWithQueryKey: (query: Record<string, unknown>) => {
       const normalized = normalizeQuery(query);
-      return `${PotholeReportCacheManage.keys.reportListWithQuery}:${JSON.stringify(
-        normalized
-      )}`;
+      return `${
+        PotholeReportCacheManage.keys.reportListWithQuery
+      }:${JSON.stringify(normalized)}`;
     },
   },
 
   updateReportCache: async (reportId: string) => {
     // Remove the specific report cache
-    await cacheService.deleteCache(PotholeReportCacheManage.keys.reportId(reportId));
+    await cacheService.deleteCache(
+      PotholeReportCacheManage.keys.reportId(reportId)
+    );
 
     // Remove the general report list cache
     await cacheService.deleteCache(PotholeReportCacheManage.keys.reportList);
@@ -30,13 +32,18 @@ const PotholeReportCacheManage = {
     );
   },
 
-  getCacheSingleReport: async (reportId: string): Promise<TPotholeReport | null> => {
+  getCacheSingleReport: async (
+    reportId: string
+  ): Promise<TPotholeReport | null> => {
     const key = PotholeReportCacheManage.keys.reportId(reportId);
     const cached = await cacheService.getCache<TPotholeReport>(key);
     return cached ?? null;
   },
 
-  setCacheSingleReport: async (reportId: string, data: Partial<TPotholeReport>) => {
+  setCacheSingleReport: async (
+    reportId: string,
+    data: Partial<TPotholeReport>
+  ) => {
     const key = PotholeReportCacheManage.keys.reportId(reportId);
     await cacheService.setCache(key, data, DEFAULT_TTL);
   },
@@ -54,7 +61,9 @@ const PotholeReportCacheManage = {
     query: Record<string, unknown>
   ): Promise<{ result: any; meta?: any } | null> => {
     const key = PotholeReportCacheManage.keys.reportListWithQueryKey(query);
-    const cached = await cacheService.getCache<{ result: any; meta?: any }>(key);
+    const cached = await cacheService.getCache<{ result: any; meta?: any }>(
+      key
+    );
     return cached ?? null;
   },
 };

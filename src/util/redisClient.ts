@@ -1,8 +1,10 @@
 import { createClient, RedisClientType } from 'redis';
+import config from '../config';
 
+console.log( `redis://${config.redis.host}:${config.redis.port}` );
 class RedisClient {
   public client: RedisClientType;
-
+ 
   constructor() {
     this.client = createClient({
       url: process.env.REDIS_URL || `redis://${process.env.REDIS_HOST}:${process.env.REDIS_PORT}`,

@@ -21,8 +21,8 @@ const themes = {
     accent: "#fef5e7",
   },
   "theme-blue": {
-    primary: "#3498db",
-    secondary: "#2980b9",
+    primary: "#4a90e2",
+    secondary: "#e4edf7",
     accent: "#e7f4fd",
   },
 };

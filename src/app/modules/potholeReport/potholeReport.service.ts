@@ -7,10 +7,17 @@ import {
   TPotholeReport,
 } from "./potholeReport.interface";
 import { PotholeReport } from "./potholeReport.model";
+import { User } from "../user/user.model";
 
 const createPotholeReport = async (
   reportData: TPotholeReport
 ): Promise<TReturnPotholeReport.createReport> => {
+  const user = reportData.user;
+  const isExistingUser = await User.isExistUserById(user.toString());
+  if (!isExistingUser) {
+    throw new AppError(StatusCodes.NOT_FOUND, "User not found");
+  }
+
   const { isEligible, existingReport, daysSinceLastReport } =
     await PotholeReport.checkReportEligibility(
       reportData.location.coordinates[0],

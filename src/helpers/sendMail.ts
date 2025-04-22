@@ -18,7 +18,7 @@ export async function sendEmail(email: string, subject: string, text: string) {
     });
 
     const info = await transporter.sendMail({
-      from: `"CARPOOLING" ${config.email.from}`, // Sender address
+      from: `"JOURA_POTHOLE" ${config.email.from}`, // Sender address
       to: email, // Recipient's email
       subject: `${subject}`, // Subject line
       text: text, // Plain text version
@@ -108,7 +108,7 @@ export async function sendEmail(email: string, subject: string, text: string) {
       <p>${text}</p>
     </div>
     <div class="footer">
-      <p>&copy; ${new Date().getFullYear()} CARPOOLING. All rights reserved.</p>
+      <p>&copy; ${new Date().getFullYear()} JOURA_POTHOLE. All rights reserved.</p>
     </div>
   </div>
 </body>
