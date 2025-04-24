@@ -39,7 +39,7 @@ const updateUser = catchAsync(async (req: Request, res: Response) => {
   const userdata = JSON.parse(req.body.data);
   let image = null;
   if (req.files && "image" in req.files && req.files.image[0]) {
-    image = `/images/${req.files.image[0].filename}`;
+    image = req.files.image[0].path;
   }
   const user = {
     ...userdata,
@@ -49,7 +49,7 @@ const updateUser = catchAsync(async (req: Request, res: Response) => {
     delete user.image;
   }
 
-  const result = await UserServices.updateUser(req.params.id,user);
+  const result = await UserServices.updateUser(req.params.id, user);
   sendResponse(res, {
     statusCode: StatusCodes.OK,
     success: true,

@@ -8,8 +8,9 @@ const createPotholeReport = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const reportData = req.body;
     reportData.user = req.user?._id;
-
-    const result = await PotholeReportServices.createPotholeReport(reportData);
+    console.log(req.files);
+    // const result = await PotholeReportServices.createPotholeReport(reportData);
+    const result ="nai"
 
     sendResponse(res, {
       statusCode: StatusCodes.CREATED,
