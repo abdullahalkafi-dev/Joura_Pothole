@@ -130,11 +130,12 @@ potholeReportSchema.statics.findReportsNearLocation = async function (
 };
 
 potholeReportSchema.statics.checkReportEligibility = async function (
-  longitude: number,
   latitude: number,
+  longitude: number,
   issue: string,
   maxDistance = 10
 ) {
+  console.log(latitude, longitude, issue, maxDistance, "checkReportEligibility");
   const existingReport = await this.findOne({
     issue,
     "location.coordinates": {

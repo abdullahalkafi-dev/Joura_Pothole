@@ -8,10 +8,13 @@ import { PotholeReportValidation } from "./potholeReport.validation";
 
 const router = express.Router();
 
-router.post("/", auth(),
- fileUploadHandler,
- validateRequest(PotholeReportValidation.createReportValidation),
-PotholeReportController.createPotholeReport);
+router.post(
+  "/",
+  auth(),
+  fileUploadHandler,
+  validateRequest(PotholeReportValidation.createReportValidation),
+  PotholeReportController.createPotholeReport
+);
 
 router.get("/", PotholeReportController.getAllReports);
 
@@ -20,15 +23,15 @@ router.get("/:id", PotholeReportController.getReportById);
 router.patch(
   "/:id",
   auth(USER_ROLES.ADMIN),
-    fileUploadHandler,
-    validateRequest(PotholeReportValidation.updateReportValidation),
+  fileUploadHandler,
+  validateRequest(PotholeReportValidation.updateReportValidation),
   PotholeReportController.updateReport
 );
 
 router.patch(
   "/:id/status",
   auth(USER_ROLES.ADMIN),
-    validateRequest(PotholeReportValidation.updateReportStatusValidation),
+  validateRequest(PotholeReportValidation.updateReportStatusValidation),
   PotholeReportController.updateReportStatus
 );
 

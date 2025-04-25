@@ -8,7 +8,12 @@ import {
 } from "./potholeReport.interface";
 import { PotholeReport } from "./potholeReport.model";
 import { User } from "../user/user.model";
-
+const clampCoordinates = (coords:[number,number]): [number,number] => {
+  const latitude = Math.max(-90, Math.min(90, coords[0]));    // Latitude should be between -90 and 90
+  const longitude = Math.max(-180, Math.min(180, coords[1]));  // Longitude should be between -180 and 180
+  console.log(latitude, longitude, 'latitude, longitude');
+  return [latitude, longitude] as [number,number];
+};
 const createPotholeReport = async (
   reportData: TPotholeReport
 ): Promise<TReturnPotholeReport.createReport> => {
@@ -17,13 +22,20 @@ const createPotholeReport = async (
   if (!isExistingUser) {
     throw new AppError(StatusCodes.NOT_FOUND, "User not found");
   }
+  // Validate coordinates
+  const coordinates = clampCoordinates(reportData.location.coordinates);
+
+  console.log(coordinates, 'coordinates');
+  reportData.location.coordinates  = coordinates; // Update the coordinates in the report data
+
 
   const { isEligible, existingReport, daysSinceLastReport } =
     await PotholeReport.checkReportEligibility(
-      reportData.location.coordinates[0],
-      reportData.location.coordinates[1],
+      coordinates[0],
+      coordinates[1],
       reportData.issue
     );
+    console.log(isEligible, existingReport, daysSinceLastReport, 'isEligible, existingReport, daysSinceLastReport');
 
   if (!isEligible && existingReport) {
     const daysLeft = 30 - daysSinceLastReport!;
@@ -37,6 +49,40 @@ const createPotholeReport = async (
   await PotholeReportCacheManage.updateReportCache(newReport._id.toString());
   return newReport;
 };
+// const createPotholeReport = async (
+//   reportData: TPotholeReport
+// ): Promise<TReturnPotholeReport.createReport> => {
+//   const user = reportData.user;
+//   const isExistingUser = await User.isExistUserById(user.toString());
+//   if (!isExistingUser) {
+//     throw new AppError(StatusCodes.NOT_FOUND, "User not found");
+//   }
+//   // Validate coordinates
+//   const coordinates = clampCoordinates(reportData.location.coordinates);
+
+   
+
+
+//   const { isEligible, existingReport, daysSinceLastReport } =
+//     await PotholeReport.checkReportEligibility(
+//       reportData.location.coordinates[0],
+//       reportData.location.coordinates[1],
+//       reportData.issue
+//     );
+//     console.log(isEligible, existingReport, daysSinceLastReport, 'isEligible, existingReport, daysSinceLastReport');
+
+//   if (!isEligible && existingReport) {
+//     const daysLeft = 30 - daysSinceLastReport!;
+//     throw new AppError(
+//       StatusCodes.CONFLICT,
+//       `A similar report exists (${daysSinceLastReport} days old). Wait ${daysLeft} more days.`
+//     );
+//   }
+
+//   const newReport = await PotholeReport.create(reportData);
+//   await PotholeReportCacheManage.updateReportCache(newReport._id.toString());
+//   return newReport;
+// };
 
 const getAllReports = async (
   query: Record<string, unknown>

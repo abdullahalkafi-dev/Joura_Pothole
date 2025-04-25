@@ -23,8 +23,8 @@ export interface PotholeReportModel extends Model<TPotholeReport> {
     maxDistance?: number
   ): Promise<TPotholeReport[]>;
   checkReportEligibility(
-    longitude: number,
     latitude: number,
+    longitude: number,
     issue: string,
     maxDistance?: number
   ): Promise<{

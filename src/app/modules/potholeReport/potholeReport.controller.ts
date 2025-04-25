@@ -6,11 +6,23 @@ import sendResponse from "../../../shared/sendResponse";
 
 const createPotholeReport = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    const reportData = req.body;
-    reportData.user = req.user?._id;
-    console.log(req.files);
-    // const result = await PotholeReportServices.createPotholeReport(reportData);
-    const result ="nai"
+    const reportData = JSON.parse(req?.body?.data);
+
+
+    let images;
+    let videos;
+    if (req.files && "image" in req.files && req.files.image[0]) {
+      images = req.files.image.map((file: Express.Multer.File) => file.path);
+      reportData.images = images;
+    }
+    if (req.files && "media" in req.files && req.files.media[0]) {
+      videos = req.files.media.map((file: Express.Multer.File) => file.path);
+      reportData.videos = videos;
+    }
+
+    console.log(reportData);
+
+    const result = await PotholeReportServices.createPotholeReport(reportData);
 
     sendResponse(res, {
       statusCode: StatusCodes.CREATED,
