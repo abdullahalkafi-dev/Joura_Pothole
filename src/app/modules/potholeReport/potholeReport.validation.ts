@@ -67,7 +67,7 @@ const updateReportValidation = z.object({
 });
 
 const updateReportStatusValidation = z.object({
-  data: z.object({
+  body: z.object({
     status: z.enum(["open", "in progress", "resolved", "rejected"], {
       required_error: "Status is required",
     }),

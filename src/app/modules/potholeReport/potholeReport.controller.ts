@@ -3,6 +3,7 @@ import { PotholeReportServices } from "./potholeReport.service";
 import { StatusCodes } from "http-status-codes";
 import catchAsync from "../../../shared/catchAsync";
 import sendResponse from "../../../shared/sendResponse";
+import AppError from "../../errors/AppError";
 
 const createPotholeReport = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -75,7 +76,7 @@ const updateReport = catchAsync(
     console.log(req.files, "req.files");
     if (req.files && "image" in req.files && req.files.image[0]) {
       images = req.files.image.map((file: Express.Multer.File) => file.path);
-       reportData.images.push(...images);
+      reportData.images.push(...images);
     }
     if (req.files && "media" in req.files && req.files.media[0]) {
       videos = req.files.media.map((file: Express.Multer.File) => file.path);
@@ -118,6 +119,13 @@ const updateReportStatus = catchAsync(
 const getNearbyReports = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const { longitude, latitude, maxDistance } = req.query;
+    if (!longitude || !latitude || !maxDistance) {
+      throw new AppError(
+        StatusCodes.BAD_REQUEST,
+        "latitude, longitude and maxDistance are required"
+      );
+    }
+    console.log(req.query);
 
     const result = await PotholeReportServices.getNearbyReports(
       Number(longitude),
@@ -125,18 +133,24 @@ const getNearbyReports = catchAsync(
       maxDistance ? Number(maxDistance) : undefined
     );
 
+    const countTotal= result.length;
     sendResponse(res, {
       statusCode: StatusCodes.OK,
       success: true,
       message: "Nearby reports retrieved successfully",
-      data: result,
+      data: {
+        countTotal,
+        result,
+      },
     });
   }
 );
 
 const getMyReports = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    const userId = req.user?._id;
+    console.log(req.user);
+    const userId = req.user?.id;
+    console.log(userId, "userId");
     const result = await PotholeReportServices.getMyReports(userId, req.query);
 
     sendResponse(res, {

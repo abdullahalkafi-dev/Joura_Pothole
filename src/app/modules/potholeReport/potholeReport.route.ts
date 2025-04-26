@@ -18,7 +18,6 @@ router.post(
 
 router.get("/", PotholeReportController.getAllReports);
 
-router.get("/:id", PotholeReportController.getReportById);
 
 router.patch(
   "/:id",
@@ -38,5 +37,6 @@ router.patch(
 router.get("/nearby", PotholeReportController.getNearbyReports);
 
 router.get("/my-reports", auth(), PotholeReportController.getMyReports);
+router.get("/:id", PotholeReportController.getReportById);
 
 export const PotholeReportRoutes: Router = router;

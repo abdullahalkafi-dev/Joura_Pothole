@@ -190,7 +190,7 @@ const createDir = (dirPath: string) => {
   }
 };
 
-const generateRandomCode = (length: number = 6): string => {
+const generateRandomCode = (length: number = 10): string => {
   const characters =
     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
   return Array.from(
