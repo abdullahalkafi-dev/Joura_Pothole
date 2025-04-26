@@ -8,9 +8,9 @@ const createPotholeReport = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const reportData = JSON.parse(req?.body?.data);
 
-
     let images;
     let videos;
+    console.log(req.files, "req.files");
     if (req.files && "image" in req.files && req.files.image[0]) {
       images = req.files.image.map((file: Express.Multer.File) => file.path);
       reportData.images = images;
@@ -20,7 +20,10 @@ const createPotholeReport = catchAsync(
       reportData.videos = videos;
     }
 
-    console.log(reportData);
+    let temp0 = reportData.location.coordinates[0];
+
+    reportData.location.coordinates[0] = reportData.location.coordinates[1];
+    reportData.location.coordinates[1] = temp0;
 
     const result = await PotholeReportServices.createPotholeReport(reportData);
 
@@ -64,9 +67,28 @@ const getReportById = catchAsync(
 const updateReport = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const { id } = req.params;
-    const updateData = req.body;
 
-    const result = await PotholeReportServices.updateReport(id, updateData);
+    const reportData = JSON.parse(req?.body?.data);
+
+    let images;
+    let videos;
+    console.log(req.files, "req.files");
+    if (req.files && "image" in req.files && req.files.image[0]) {
+      images = req.files.image.map((file: Express.Multer.File) => file.path);
+       reportData.images.push(...images);
+    }
+    if (req.files && "media" in req.files && req.files.media[0]) {
+      videos = req.files.media.map((file: Express.Multer.File) => file.path);
+      reportData.videos.push(...videos);
+    }
+    if (reportData.location && reportData.location.coordinates) {
+      let temp0 = reportData.location.coordinates[0];
+
+      reportData.location.coordinates[0] = reportData.location.coordinates[1];
+      reportData.location.coordinates[1] = temp0;
+    }
+
+    const result = await PotholeReportServices.updateReport(id, reportData);
 
     sendResponse(res, {
       statusCode: StatusCodes.OK,

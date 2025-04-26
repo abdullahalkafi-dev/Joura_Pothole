@@ -100,15 +100,15 @@ potholeReportSchema.index({
 potholeReportSchema.index({ status: 1 });
 potholeReportSchema.index({ user: 1 });
 
-// Add virtuals
-potholeReportSchema.virtual("reportAge").get(function (this: TPotholeReport) {
-  const now = new Date();
-  const diffInMs = now.getTime() - this.createdAt.getTime();
-  const diffInHours = Math.floor(diffInMs / (1000 * 60 * 60));
-  return diffInHours < 24
-    ? `${diffInHours} hours`
-    : `${Math.floor(diffInHours / 24)} days`;
-});
+// // Add virtuals
+// potholeReportSchema.virtual("reportAge").get(function (this: TPotholeReport) {
+//   const now = new Date();
+//   const diffInMs = now.getTime() - this.createdAt.getTime();
+//   const diffInHours = Math.floor(diffInMs / (1000 * 60 * 60));
+//   return diffInHours < 24
+//     ? `${diffInHours} hours`
+//     : `${Math.floor(diffInHours / 24)} days`;
+// });
 
 // Add static methods
 potholeReportSchema.statics.isExistReportById = async function (id: string) {
@@ -130,12 +130,18 @@ potholeReportSchema.statics.findReportsNearLocation = async function (
 };
 
 potholeReportSchema.statics.checkReportEligibility = async function (
-  latitude: number,
   longitude: number,
+  latitude: number,
   issue: string,
   maxDistance = 10
 ) {
-  console.log(latitude, longitude, issue, maxDistance, "checkReportEligibility");
+  console.log(
+    latitude,
+    longitude,
+    issue,
+    maxDistance,
+    "checkReportEligibility"
+  );
   const existingReport = await this.findOne({
     issue,
     "location.coordinates": {
