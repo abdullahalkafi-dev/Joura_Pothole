@@ -84,6 +84,18 @@ const deleteAccount = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const resendOtp = catchAsync(async (req: Request, res: Response) => {
+  const email = req.body.email;
+  const result = await AuthService.resendOtp(email);
+
+  sendResponse(res, {
+    success: true,
+    statusCode: StatusCodes.OK,
+    message: "Please check your email, we send a OTP!",
+    data: result,
+  });
+}
+);
 export const AuthController = {
   verifyEmail,
   loginUser,
@@ -91,4 +103,5 @@ export const AuthController = {
   resetPassword,
   changePassword,
   deleteAccount,
+  resendOtp
 };

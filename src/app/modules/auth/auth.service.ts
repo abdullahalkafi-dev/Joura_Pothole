@@ -79,7 +79,7 @@ const forgetPasswordToDB = async (email: string) => {
       | "theme-purple"
       | "theme-orange"
       | "theme-blue",
-    expiresIn: 15,
+    expiresIn: 30,
   };
   const forgetPassword = emailTemplate.resetPassword(value);
 
@@ -142,13 +142,49 @@ const verifyEmailToDB = async (payload: TVerifyEmail) => {
   await ResetToken.create({
     user: isExistUser._id,
     token: createToken,
-    expireAt: new Date(Date.now() + 15 * 60000),
+    expireAt: new Date(Date.now() + 30 * 60000),
   });
   message =
     "Verification Successful: Please securely store and utilize this code for reset password";
   data = createToken;
 
   return { data, message };
+};
+//resend otp
+const resendOtp = async (email: string) => {
+  const isExistUser = await User.findOne({
+    email,
+  });
+  if (!isExistUser) {
+    throw new AppError(StatusCodes.BAD_REQUEST, "User doesn't exist!");
+  }
+
+   //send mail
+   const otp = generateOTP();
+   console.log(otp, "otp");
+   const value = {
+     otp,
+     email: isExistUser.email,
+     name: isExistUser.firstName!,
+     theme: "theme-blue" as
+       | "theme-green"
+       | "theme-red"
+       | "theme-purple"
+       | "theme-orange"
+       | "theme-blue",
+     expiresIn: 30,
+   };
+   const createAccount = emailTemplate.createAccount(value);
+ 
+   emailHelper.sendEmail(createAccount);
+ 
+   //save to DB
+   const authentication = {
+     oneTimeCode: otp,
+     expireAt: new Date(Date.now() + 30 * 60000),
+   };
+ 
+   await User.findOneAndUpdate({ email }, { $set: { authentication } });
 };
 
 //forget password
@@ -279,4 +315,5 @@ export const AuthService = {
   resetPasswordToDB,
   changePasswordToDB,
   deleteAccountToDB,
+  resendOtp,
 };
