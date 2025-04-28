@@ -4,3 +4,4 @@ medmeet-admin.json
 /winston
 /uploads/
 dist/
+.pnpm-store/

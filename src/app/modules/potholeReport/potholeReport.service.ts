@@ -8,7 +8,6 @@ import {
 } from "./potholeReport.interface";
 import { PotholeReport } from "./potholeReport.model";
 import { User } from "../user/user.model";
-import e from "cors";
 
 const createPotholeReport = async (
   reportData: TPotholeReport
@@ -67,16 +66,18 @@ const getAllReports = async (
 
 const getReportById = async (
   id: string
-): Promise<TReturnPotholeReport.getSingleReport> => {
-  const cachedReport = await PotholeReportCacheManage.getCacheSingleReport(id);
-  if (cachedReport) return cachedReport;
-
-  const report = await PotholeReport.findById(id);
+): Promise<TReturnPotholeReport.getSingleReport & {potholeVerification:any}> => {
+  const report = await PotholeReport.findById(id).lean();
   if (!report) {
     throw new AppError(StatusCodes.NOT_FOUND, "Report not found");
   }
-  await PotholeReportCacheManage.setCacheSingleReport(id, report);
-  return report;
+  const userId = report.user.toString();
+
+  const potholeVerification = await PotholeReport.find({
+    user: userId,
+    potholeId: id,
+  }).select("userId").lean();
+return { ...report, potholeVerification };
 };
 
 const updateReport = async (
@@ -87,9 +88,6 @@ const updateReport = async (
     new: true,
     runValidators: true,
   });
-
-
-  
 
   if (!report) {
     throw new AppError(StatusCodes.NOT_FOUND, "Report not found");

@@ -15,7 +15,7 @@ services:
     volumes:
       - joura-pothole-logs:/app/winston
       - /app/node_modules
-      - .:/app
+      - .:/app    
     depends_on:
       - redis
 
