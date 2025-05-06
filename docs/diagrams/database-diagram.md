@@ -52,22 +52,11 @@ erDiagram
         date expiresAt
         date createdAt
     }
-    
-    UserMessage {
-        string _id PK
-        string sender FK
-        string receiver FK
-        string content
-        boolean isRead
-        date createdAt
-    }
 
     User ||--o{ PotholeReport : "reports"
     User ||--o{ PotholeVerification : "verifies"
     PotholeReport ||--o{ PotholeVerification : "has"
     User ||--o{ ResetToken : "requests"
-    User ||--o{ UserMessage : "sends"
-    User ||--o{ UserMessage : "receives"
 ```
 
 ## Schema Details
@@ -116,11 +105,3 @@ erDiagram
 - **token**: Password reset token (hashed)
 - **expiresAt**: Expiration timestamp
 - **createdAt**: Timestamp of token creation
-
-### UserMessage Schema
-- **_id**: Unique identifier (ObjectId)
-- **sender**: Reference to User who sent the message
-- **receiver**: Reference to User who receives the message
-- **content**: Message content
-- **isRead**: Read status
-- **createdAt**: Timestamp of message creation
