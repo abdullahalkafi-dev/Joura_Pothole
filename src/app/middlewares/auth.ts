@@ -14,11 +14,9 @@ const auth =
       if (!tokenWithBearer) {
         throw new AppError(StatusCodes.UNAUTHORIZED, 'You are not authorized');
       }
-      console.log(tokenWithBearer);
 
       if (tokenWithBearer && tokenWithBearer.startsWith('Bearer')) {
         const token = tokenWithBearer.split(' ')[1];
- console.log(token);
         //verify token
         const verifyUser = jwtHelper.verifyToken(
           token,

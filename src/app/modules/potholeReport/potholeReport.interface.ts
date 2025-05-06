@@ -12,6 +12,7 @@ export type TPotholeReport = {
   status: "open" | "in progress" | "resolved" | "rejected";
   images?: string[];
   videos?: string[];
+  verifiedBy?: [Types.ObjectId]; 
   createdAt: Date;
   updatedAt: Date;
 };

@@ -43,7 +43,44 @@ const getUserById = async (
   await UserCacheManage.setCacheSingleUser(id, user);
   return user;
 };
+const getMe = async (
+  id: string
+): Promise<Partial<TReturnUser.getSingleUser>> => {
+  console.log(id);
+if(!id) {
+  throw new AppError(StatusCodes.UNAUTHORIZED, "You are not authorized");
+}
+  // First, try to retrieve the user from cache.
+  const cachedUser = await UserCacheManage.getCacheSingleUser(id);
+  if (cachedUser) return cachedUser;
+  // If not cached, query the database using lean with virtuals enabled.
+  const user = await User.findById(id);
+  console.log(user);
+  if (!user) {
+    throw new AppError(StatusCodes.NOT_FOUND, "User not found");
+  }
+  // Cache the freshly retrieved user data.
+  await UserCacheManage.setCacheSingleUser(id, user);
+  return user;
+};
 const updateUser = async (
+  id: string,
+  updateData: Partial<TReturnUser.updateUser>
+): Promise<Partial<TReturnUser.updateUser>> => {
+  const user = await User.findByIdAndUpdate(id, updateData, {
+    new: true,
+  });
+  if (!user) {
+    throw new AppError(StatusCodes.NOT_FOUND, "User not found");
+  }
+  //remove cache
+  await UserCacheManage.updateUserCache(id);
+
+  //set new cache
+  UserCacheManage.setCacheSingleUser(id, user);
+  return user;
+};
+const updateUserByToken = async (
   id: string,
   updateData: Partial<TReturnUser.updateUser>
 ): Promise<Partial<TReturnUser.updateUser>> => {
@@ -102,6 +139,8 @@ const updateUserRole = async (
   return user;
 };
 
+
+
 export const UserServices = {
   createUser,
   getAllUsers,
@@ -109,4 +148,6 @@ export const UserServices = {
   updateUser,
   updateUserActivationStatus,
   updateUserRole,
+  getMe,
+  updateUserByToken
 };

@@ -65,6 +65,12 @@ const potholeReportSchema = new Schema<TPotholeReport, PotholeReportModel>(
       },
       default: "open",
     },
+    verifiedBy: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
     images: {
       type: [String],
     },

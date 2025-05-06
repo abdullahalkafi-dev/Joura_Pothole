@@ -35,6 +35,15 @@ const getUserById = catchAsync(async (req: Request, res: Response) => {
     data: user,
   });
 });
+const getMe = catchAsync(async (req: Request, res: Response) => {
+  const user = await UserServices.getUserById(req.user.id);
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: "User retrieved successfully",
+    data: user,
+  });
+});
 const updateUser = catchAsync(async (req: Request, res: Response) => {
   const userdata = JSON.parse(req.body.data);
   let image = null;
@@ -48,8 +57,32 @@ const updateUser = catchAsync(async (req: Request, res: Response) => {
   if (user.image === null) {
     delete user.image;
   }
+  
+ const id = req.params.id;
+  const result = await UserServices.updateUser(id, user);
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: "User updated successfully",
+    data: result,
+  });
+});
+const updateUserByToken = catchAsync(async (req: Request, res: Response) => {
+  const userdata = JSON.parse(req.body.data);
+  let image = null;
+  if (req.files && "image" in req.files && req.files.image[0]) {
+    image = req.files.image[0].path;
+  }
+  const user = {
+    ...userdata,
+    image: image,
+  };
+  if (user.image === null) {
+    delete user.image;
+  }
 
-  const result = await UserServices.updateUser(req.params.id, user);
+ const id = req.user.id
+  const result = await UserServices.updateUserByToken(id, user);
   sendResponse(res, {
     statusCode: StatusCodes.OK,
     success: true,
@@ -94,4 +127,6 @@ export const UserController = {
   updateUser,
   updateUserActivationStatus,
   updateUserRole,
+  getMe,
+  updateUserByToken,
 };

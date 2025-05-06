@@ -21,9 +21,19 @@ const createPotholeVerification = async (
   }
 
   const verification = await PotholeVerification.create(payload);
+  if (verification) {
+    console.log(verification);
+    console.log(verification.userId);
+    await PotholeReport.findByIdAndUpdate(potholeId, {
+      $push: {
+        verifiedBy: verification.userId,
+      },
+    });
+   
+  }
   return verification;
 };
 
 export const PotholeVerificationServices = {
-    createPotholeVerification,
-    };
+  createPotholeVerification,
+};
