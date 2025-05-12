@@ -1,10 +1,10 @@
-import { NextFunction, Request, Response } from 'express';
-import { StatusCodes } from 'http-status-codes';
-import { Secret } from 'jsonwebtoken';
-import config from '../../config';
+import { NextFunction, Request, Response } from "express";
+import { StatusCodes } from "http-status-codes";
+import { Secret } from "jsonwebtoken";
+import config from "../../config";
 
-import { jwtHelper } from '../../helpers/jwtHelper';
-import AppError from '../errors/AppError';
+import { jwtHelper } from "../../helpers/jwtHelper";
+import AppError from "../errors/AppError";
 
 const auth =
   (...roles: string[]) =>
@@ -12,11 +12,11 @@ const auth =
     try {
       const tokenWithBearer = req.headers.authorization;
       if (!tokenWithBearer) {
-        throw new AppError(StatusCodes.UNAUTHORIZED, 'You are not authorized');
+        throw new AppError(StatusCodes.UNAUTHORIZED, "You are not authorized");
       }
 
-      if (tokenWithBearer && tokenWithBearer.startsWith('Bearer')) {
-        const token = tokenWithBearer.split(' ')[1];
+      if (tokenWithBearer && tokenWithBearer.startsWith("Bearer")) {
+        const token = tokenWithBearer.split(" ")[1];
         //verify token
         const verifyUser = jwtHelper.verifyToken(
           token,
@@ -25,8 +25,7 @@ const auth =
         //set user to header
         req.user = verifyUser;
         console.log(req.user);
-         
-         
+
         //guard user
         if (roles.length && !roles.includes(verifyUser.role)) {
           throw new AppError(

@@ -1,5 +1,6 @@
 import { z } from "zod";
 
+
 const createUser = z.object({
   body: z
     .object({
@@ -49,25 +50,10 @@ const updateUser = z.object({
         .trim()
         .optional(),
 
-      phoneNumber: z
-        .string()
-        .regex(/^\+?[1-9]\d{1,14}$/, "Please provide a valid phone number")
-        .trim()
-        .optional(),
+      phoneNumber: z.string().trim().optional(),
       image: z.string().nullable().optional(),
       fcmToken: z.string().nullable().optional(),
-      address: z
-        .array(
-          z.object({
-            title: z.string(),
-            street: z.string(),
-            apartmentNumber: z.string(),
-            city: z.string(),
-            state: z.string(),
-            postalCode: z.string(),
-          })
-        )
-        .optional(),
+      address: z.string().optional(),
     })
     .strict(),
 });

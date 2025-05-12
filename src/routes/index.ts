@@ -4,6 +4,7 @@ import { AuthRoutes } from "../app/modules/auth/auth.route";
 import { PotholeReportRoutes } from "../app/modules/potholeReport/potholeReport.route";
 import { PotholeVerificationRoutes } from "../app/modules/potholeVerification/potholeVerification.route";
 
+
 const router: Router = express.Router();
 
 const apiRoutes = [

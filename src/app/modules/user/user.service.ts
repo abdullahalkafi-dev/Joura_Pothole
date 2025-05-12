@@ -84,6 +84,7 @@ const updateUserByToken = async (
   id: string,
   updateData: Partial<TReturnUser.updateUser>
 ): Promise<Partial<TReturnUser.updateUser>> => {
+  console.log(updateData,"updateData");
   const user = await User.findByIdAndUpdate(id, updateData, {
     new: true,
   });

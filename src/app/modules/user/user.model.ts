@@ -61,17 +61,11 @@ const userSchema = new Schema<TUser, UserModal>(
       unique: true,
       trim: true,
       sparse: true, // This prevents duplicate "" or null errors
-      validate: {
-        validator: (value: string) => {
-          const phoneRegex = /^\+?[1-9]\d{1,14}$/;
-          return phoneRegex.test(value);
-        },
-        message: "Please provide a valid phone number",
-      },
+   
     },
     image: {
       type: String,
-      default: null,
+      default: "https://joura-pothole.s3.ap-south-1.amazonaws.com/Default_profile.jpg",
     },
     fcmToken: {
       type: String,

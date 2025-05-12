@@ -23,7 +23,7 @@ const createReportValidation = z.object({
     description: z
       .string()
       .min(10, "Description must be at least 10 characters long")
-      .max(3000, "Description can't be more than 1000 characters"),
+      .max(3000, "Description can't be more than 1000 characters").optional(),
     user: z.string().nonempty("User ID is required"),
   }),
 });
