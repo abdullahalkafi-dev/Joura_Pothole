@@ -30,6 +30,8 @@ const PotholeReportCacheManage = {
     await cacheService.deleteCacheByPattern(
       PotholeReportCacheManage.keys.reportListWithQuery + ":*"
     );
+    console.log(
+      `Cache for report ID ${reportId} and all related caches have been invalidated.`)
   },
 
   getCacheSingleReport: async (

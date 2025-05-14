@@ -4,6 +4,7 @@ import { PotholeReport } from "../potholeReport/potholeReport.model";
 import { User } from "../user/user.model";
 import { TPotholeVerification } from "./potholeVerification.interface";
 import { PotholeVerification } from "./potholeVerification.model";
+import PotholeReportCacheManage from "../potholeReport/potholeReport.cacheManage";
 
 const createPotholeVerification = async (
   payload: Partial<TPotholeVerification>
@@ -19,17 +20,29 @@ const createPotholeVerification = async (
   if (!pothole) {
     throw new AppError(StatusCodes.NOT_FOUND, "Pothole not found");
   }
+  const existingVerification = await PotholeVerification.findOne({
+    userId: userId,
+    potholeId: potholeId,
+  });
+  if (existingVerification) {
+    throw new AppError(
+      StatusCodes.BAD_REQUEST,
+      "Pothole already voted by this user"
+    );
+  } 
 
   const verification = await PotholeVerification.create(payload);
   if (verification) {
     console.log(verification);
     console.log(verification.userId);
-    await PotholeReport.findByIdAndUpdate(potholeId, {
+ const result=   await PotholeReport.findByIdAndUpdate(potholeId, {
       $push: {
         verifiedBy: verification.userId,
       },
     });
-   
+    if(result){
+      PotholeReportCacheManage.updateReportCache(result._id.toString());
+    }
   }
   return verification;
 };

@@ -232,6 +232,7 @@ const configureMulter = (baseUploadDir: string) => {
   });
 
   const fileFilter = (req: Request, file: any, cb: FileFilterCallback) => {
+    console.log(file.mimetype);
     if (
       file.fieldname === "image" &&
       !SUPPORTED_IMAGE_TYPES.includes(file.mimetype)
@@ -300,6 +301,8 @@ const generateFileName = (file: any, formattedDate: string, req: Request) => {
 
 // Main File Upload Handler
 const fileUploadHandler = (req: Request, res: Response, next: NextFunction) => {
+  console.log(req?.body);
+  console.log(req?.files, "req.files");
   const baseUploadDir = path.join(process.cwd(), "uploads");
   createDir(baseUploadDir);
 

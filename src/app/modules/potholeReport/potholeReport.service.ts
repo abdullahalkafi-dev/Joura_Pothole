@@ -134,10 +134,7 @@ const getMyReports = async (
     ...query,
     user: userId,
   };
-  const cached = await PotholeReportCacheManage.getCacheListWithQuery(
-    attachedQuery
-  );
-  if (cached) return cached;
+
 
   const reportQuery = new QueryBuilder(
     PotholeReport.find({ user: userId }),
@@ -152,7 +149,6 @@ const getMyReports = async (
   const result = await reportQuery.modelQuery;
   const meta = await reportQuery.countTotal();
 
-  await PotholeReportCacheManage.setCacheListWithQuery(query, { result, meta });
   return { result, meta };
 };
 
