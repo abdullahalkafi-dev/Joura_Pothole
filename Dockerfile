@@ -8,7 +8,10 @@ RUN  npm install -g pnpm && pnpm install
 
 COPY . .
 
-EXPOSE 5004
+# Build TypeScript
+RUN pnpm run build
 
-# Build or run your app
-CMD ["pnpm","run","dev"]
+EXPOSE 5006
+
+# Start the app (compiled JS)
+CMD ["pnpm", "start"]
