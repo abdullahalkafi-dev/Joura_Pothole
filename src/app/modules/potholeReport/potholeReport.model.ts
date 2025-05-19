@@ -18,6 +18,7 @@ const potholeReportSchema = new Schema<TPotholeReport, PotholeReportModel>(
         values: ["Mild", "Moderate", "Severe"],
         message: "{VALUE} is not a valid severity level",
       },
+    
       required: [true, "Severity level is required"],
     },
     location: {

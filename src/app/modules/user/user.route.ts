@@ -42,4 +42,5 @@ router.patch(
   UserController.updateUser
 );
 
+
 export const UserRoutes: Router = router;

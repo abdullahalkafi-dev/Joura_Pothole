@@ -5,6 +5,7 @@ import PotholeReportCacheManage from "./potholeReport.cacheManage";
 import {
   TReturnPotholeReport,
   TPotholeReport,
+
 } from "./potholeReport.interface";
 import { PotholeReport } from "./potholeReport.model";
 import { User } from "../user/user.model";
@@ -47,8 +48,8 @@ const createPotholeReport = async (
 const getAllReports = async (
   query: Record<string, unknown>
 ): Promise<TReturnPotholeReport.getAllReports> => {
-  const cached = await PotholeReportCacheManage.getCacheListWithQuery(query);
-  if (cached) return cached;
+  // const cached = await PotholeReportCacheManage.getCacheListWithQuery(query);
+  // if (cached) return cached;
 
   const reportQuery = new QueryBuilder(PotholeReport.find(), query)
     .search(["description", "location.address"])
@@ -60,18 +61,19 @@ const getAllReports = async (
   const result = await reportQuery.modelQuery;
   const meta = await reportQuery.countTotal();
 
-  await PotholeReportCacheManage.setCacheListWithQuery(query, { result, meta });
+  // await PotholeReportCacheManage.setCacheListWithQuery(query, { result, meta });
   return { result, meta };
 };
 
 const getReportById = async (
   id: string
 ): Promise<TReturnPotholeReport.getSingleReport & {potholeVerification:any}> => {
-  const report = await PotholeReport.findById(id).lean();
+  console.log(id, "id");
+  const report = await PotholeReport.findById(id).populate("user").lean();
   if (!report) {
     throw new AppError(StatusCodes.NOT_FOUND, "Report not found");
   }
-  const userId = report.user.toString();
+  const userId = report.user._id.toString();
 
   const potholeVerification = await PotholeReport.find({
     user: userId,
@@ -151,6 +153,42 @@ const getMyReports = async (
 
   return { result, meta };
 };
+const getStats = async()=>{
+  const totalReports = await PotholeReport.countDocuments();
+  const totalResolved = await PotholeReport.countDocuments({
+    status: "resolved",
+  });
+  const totalInProgress = await PotholeReport.countDocuments({
+    status: "in progress",
+  });
+  const totalRejected = await PotholeReport.countDocuments({
+    status: "rejected",
+  });
+  const analyticsData= [
+    {
+      name: "totalReports",
+      value: totalReports,
+    },
+     {
+      name: "open",
+      value: totalReports - (totalResolved + totalInProgress + totalRejected),
+     },
+    {
+      name: "resolved",
+      value: totalResolved,
+    },
+    {
+      name: "inProgress",
+      value: totalInProgress,
+    },
+    {
+      name: "rejected",
+      value: totalRejected,
+    },
+  ];
+
+  return analyticsData;
+}
 
 export const PotholeReportServices = {
   createPotholeReport,
@@ -160,4 +198,5 @@ export const PotholeReportServices = {
   updateReportStatus,
   getNearbyReports,
   getMyReports,
+  getStats
 };

@@ -41,18 +41,19 @@ export class QueryBuilder<T> {
 
     return this;
   }
-  sort(section: string = "null") {
-    let sortBy = "-createdAt";
+  sort() {
+    let sortBy = "-createdAt"; // Default sorting by createdAt descending
 
     if (this.query?.sortBy) {
-      sortBy = this.query.sortBy as string;
+      const order = (this.query.sortOrder as string) === 'desc' ? '-' : '';
+      sortBy = `${order}${this.query.sortBy}`;
     }
     this.modelQuery = this.modelQuery.sort(sortBy);
     return this;
   }
   fields() {
     let fields = "";
-
+   
     if (this.query?.fields) {
       fields = (this.query?.fields as string).split(",").join(" ");
     }
@@ -62,13 +63,25 @@ export class QueryBuilder<T> {
   }
   filter() {
     const queryObj = { ...this.query };
-    const excludeFields = ["searchTerm", "page", "limit", "sortBy", "fields"];
-    if (queryObj.specialist) {
-      queryObj.specialist = { $eq: queryObj.specialist as string };
-    }
+    // Remove the fields that are not needed for filtering
+    const excludeFields = ["searchTerm", "page", "limit", "sortBy", "fields","sortOrder"];
+
+
     if (queryObj.user) {
       queryObj.user = { $eq: queryObj.user as string };
+    }  
+   
+    if(queryObj.issue && queryObj.issue === "all"){
+      delete queryObj.issue;
+
     }
+    if(queryObj.severityLevel && queryObj.severityLevel === "all"){
+      delete queryObj.severityLevel;
+    }
+    if(queryObj.status && queryObj.status === "all"){
+      delete queryObj.status;
+    }
+    console.log(queryObj, "queryObj");
     excludeFields.forEach((e) => delete queryObj[e]);
     Object.keys(queryObj).forEach((key) => {
       if (typeof queryObj[key] === "string") {

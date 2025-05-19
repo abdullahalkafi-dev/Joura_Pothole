@@ -163,6 +163,20 @@ const getMyReports = catchAsync(
   }
 );
 
+const getStats = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const result = await PotholeReportServices.getStats();
+
+    sendResponse(res, {
+      statusCode: StatusCodes.OK,
+      success: true,
+      message: "Reports stats retrieved successfully",
+      data: result,
+    });
+  }
+);
+
+
 export const PotholeReportController = {
   createPotholeReport,
   getAllReports,
@@ -171,4 +185,5 @@ export const PotholeReportController = {
   updateReportStatus,
   getNearbyReports,
   getMyReports,
+  getStats,
 };

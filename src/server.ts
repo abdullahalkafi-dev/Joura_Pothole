@@ -9,7 +9,6 @@ import { errorLogger, logger } from './shared/logger';
 
 import redisClient from './util/redisClient';
 import app from './app';
-import { setupSocket } from './socket/socket';
 import config from './config';
 
 //uncaught exception
@@ -35,7 +34,6 @@ async function main() {
     });
     
     //socket
-    setupSocket(server);
   } catch (error) {
     console.log(error);
     errorLogger.error(colors.red('🤢 Failed to connect Database'));
