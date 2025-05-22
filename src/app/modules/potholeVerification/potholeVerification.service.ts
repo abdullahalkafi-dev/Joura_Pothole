@@ -33,8 +33,8 @@ const createPotholeVerification = async (
 
   const verification = await PotholeVerification.create(payload);
   if (verification) {
-    console.log(verification);
-    console.log(verification.userId);
+    // console.log(verification);
+    // console.log(verification.userId);
  const result=   await PotholeReport.findByIdAndUpdate(potholeId, {
       $push: {
         verifiedBy: verification.userId,

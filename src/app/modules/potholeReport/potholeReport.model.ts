@@ -142,13 +142,13 @@ potholeReportSchema.statics.checkReportEligibility = async function (
   issue: string,
   maxDistance = 10
 ) {
-  console.log(
-    latitude,
-    longitude,
-    issue,
-    maxDistance,
-    "checkReportEligibility"
-  );
+  // console.log(
+  //   latitude,
+  //   longitude,
+  //   issue,
+  //   maxDistance,
+  //   "checkReportEligibility"
+  // );
   const existingReport = await this.findOne({
     issue,
     "location.coordinates": {

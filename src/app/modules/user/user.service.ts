@@ -23,7 +23,7 @@ const getAllUsers = async (
     .paginate()
     .fields();
   const result = await userQuery.modelQuery;
-  console.log(result);
+  // console.log(result);
   const meta = await userQuery.countTotal();
   await UserCacheManage.setCacheListWithQuery(query, { result, meta });
   return { result, meta };
@@ -46,7 +46,7 @@ const getUserById = async (
 const getMe = async (
   id: string
 ): Promise<Partial<TReturnUser.getSingleUser>> => {
-  console.log(id);
+  // console.log(id);
 if(!id) {
   throw new AppError(StatusCodes.UNAUTHORIZED, "You are not authorized");
 }
@@ -55,7 +55,7 @@ if(!id) {
   if (cachedUser) return cachedUser;
   // If not cached, query the database using lean with virtuals enabled.
   const user = await User.findById(id);
-  console.log(user);
+  // console.log(user);
   if (!user) {
     throw new AppError(StatusCodes.NOT_FOUND, "User not found");
   }
@@ -84,7 +84,7 @@ const updateUserByToken = async (
   id: string,
   updateData: Partial<TReturnUser.updateUser>
 ): Promise<Partial<TReturnUser.updateUser>> => {
-  console.log(updateData,"updateData");
+  // console.log(updateData,"updateData");
   const user = await User.findByIdAndUpdate(id, updateData, {
     new: true,
   });
@@ -102,15 +102,15 @@ const updateUserActivationStatus = async (
   id: string,
   status: "active" | "delete"
 ): Promise<TReturnUser.updateUserActivationStatus> => {
-  console.log(status);
-  console.log(id);
+  // console.log(status);
+  // console.log(id);
 
   const user = await User.findByIdAndUpdate(
     id,
     { status: status },
     { new: true }
   );
-  console.log(user);
+  // console.log(user);
   if (!user) {
     throw new AppError(StatusCodes.NOT_FOUND, "User not found");
   }

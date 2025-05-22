@@ -21,13 +21,13 @@ import UserCacheManage from "../user/user.cacheManage";
 //login
 const loginUserFromDB = async (payload: Partial<TLoginData>) => {
   const { email, password } = payload;
-  console.log(payload);
+  // console.log(payload);
   if (!password) {
     throw new AppError(StatusCodes.BAD_REQUEST, "Password is required");
   }
 
   const isExistUser = await User.findOne({ email }).select("+password");
-  console.log(isExistUser);
+  // console.log(isExistUser);
   if (!isExistUser) {
     throw new AppError(StatusCodes.BAD_REQUEST, "User doesn't exist!");
   }
@@ -68,7 +68,7 @@ const forgetPasswordToDB = async (email: string) => {
 
   //send mail
   const otp = generateOTP();
-  console.log(otp, "otp");
+  // console.log(otp, "otp");
   const value = {
     otp,
     email: isExistUser.email,
@@ -109,7 +109,7 @@ const verifyEmailToDB = async (payload: TVerifyEmail) => {
       "Please give the otp, check your email we send a code"
     );
   }
-  console.log(isExistUser.authentication?.oneTimeCode, "old code");
+  // console.log(isExistUser.authentication?.oneTimeCode, "old code");
   if (isExistUser.authentication?.oneTimeCode !== oneTimeCode) {
     throw new AppError(StatusCodes.BAD_REQUEST, "You provided wrong otp");
   }

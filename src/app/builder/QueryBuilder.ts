@@ -81,7 +81,6 @@ export class QueryBuilder<T> {
     if(queryObj.status && queryObj.status === "all"){
       delete queryObj.status;
     }
-    console.log(queryObj, "queryObj");
     excludeFields.forEach((e) => delete queryObj[e]);
     Object.keys(queryObj).forEach((key) => {
       if (typeof queryObj[key] === "string") {

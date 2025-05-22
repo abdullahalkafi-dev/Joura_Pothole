@@ -25,12 +25,12 @@ const createPotholeReport = async (
       reportData.location.coordinates[1],
       reportData.issue
     );
-  console.log(
-    isEligible,
-    existingReport,
-    daysSinceLastReport,
-    "isEligible, existingReport, daysSinceLastReport"
-  );
+  // console.log(
+  //   isEligible,
+  //   existingReport,
+  //   daysSinceLastReport,
+  //   "isEligible, existingReport, daysSinceLastReport"
+  // );
 
   if (!isEligible && existingReport) {
     const daysLeft = 30 - daysSinceLastReport!;
@@ -68,7 +68,7 @@ const getAllReports = async (
 const getReportById = async (
   id: string
 ): Promise<TReturnPotholeReport.getSingleReport & {potholeVerification:any}> => {
-  console.log(id, "id");
+  // console.log(id, "id");
   const report = await PotholeReport.findById(id).populate("user").lean();
   if (!report) {
     throw new AppError(StatusCodes.NOT_FOUND, "Report not found");

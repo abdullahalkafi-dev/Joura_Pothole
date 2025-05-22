@@ -47,7 +47,7 @@ const UserCacheManage = {
     ttl: number = DEFAULT_TTL
   ) => {
     const key = UserCacheManage.keys.userListWithQueryKey(query);
-    console.log(key);
+    // console.log(key);
     await cacheService.setCache(key, data, ttl);
   },
 

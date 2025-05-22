@@ -301,8 +301,8 @@ const generateFileName = (file: any, formattedDate: string, req: Request) => {
 
 // Main File Upload Handler
 const fileUploadHandler = (req: Request, res: Response, next: NextFunction) => {
-  console.log(req?.body);
-  console.log(req?.files, "req.files");
+  // console.log(req?.body);
+  // console.log(req?.files, "req.files");
   const baseUploadDir = path.join(process.cwd(), "uploads");
   createDir(baseUploadDir);
 
