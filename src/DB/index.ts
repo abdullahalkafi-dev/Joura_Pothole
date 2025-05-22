@@ -7,7 +7,7 @@ import { TUser } from '../app/modules/user/user.interface';
 
 const superUser: TUser = {
   firstName: 'Abdullah',
-  lastName: 'Alshahrani',
+  lastName: 'Al Kafi',
   role: "ADMIN",
   email: config.super_admin.email!,
   password: config.super_admin.password!,

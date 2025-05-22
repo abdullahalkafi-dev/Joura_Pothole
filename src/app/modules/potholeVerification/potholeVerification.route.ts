@@ -14,4 +14,8 @@ router.post(
   PotholeVerificationController.createPotholeVerification
 );
 
+router.get(
+  "/:id",
+  PotholeVerificationController.getVerificationByPotholeId
+);
 export const PotholeVerificationRoutes:Router = router;

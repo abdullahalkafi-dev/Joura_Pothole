@@ -46,7 +46,54 @@ const createPotholeVerification = async (
   }
   return verification;
 };
+const getVerificationByPotholeId = async (id: string) => {
+  const verification = await PotholeVerification.aggregate([
+    { $match: { potholeId: id } },
+    {
+      $group: {
+        _id: "$status",
+        count: { $sum: 1 },
+        users: { $push: "$userId" }
+      }
+    },
+    {
+      $project: {
+        status: "$_id",
+        count: 1,
+        users: 1,
+        _id: 0
+      }
+    }
+  ]);
+
+  if (!verification || verification.length === 0) {
+    throw new AppError(StatusCodes.NOT_FOUND, "No verifications found for this pothole");
+  }
+
+  // Create a summary object with all status types
+  const summary = {
+    potholeId: id,
+    totalVerifications: 0,
+    statusCounts: {
+      "Yes": 0,
+      "No": 0,
+      "I don't know": 0
+    },
+    details: verification
+  };
+
+  // Update the summary with actual counts
+  verification.forEach(item => {
+    summary.totalVerifications += item.count;
+    // Type assertion to ensure item.status is a valid key
+    summary.statusCounts[item.status as keyof typeof summary.statusCounts] = item.count;
+  });
+
+  return summary;
+};
+
 
 export const PotholeVerificationServices = {
   createPotholeVerification,
+  getVerificationByPotholeId,
 };

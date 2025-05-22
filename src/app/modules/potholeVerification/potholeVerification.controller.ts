@@ -19,7 +19,23 @@ const createPotholeVerification = catchAsync(
     });
   }
 );
+const getVerificationByPotholeId = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const { id } = req.params;
+    const result = await PotholeVerificationServices.getVerificationByPotholeId(
+      id
+    );
+
+    sendResponse(res, {
+      statusCode: StatusCodes.OK,
+      success: true,
+      message: "Pothole verification retrieved successfully",
+      data: result,
+    });
+  }
+);
 
 export const PotholeVerificationController = {
   createPotholeVerification,
+  getVerificationByPotholeId,
 };
