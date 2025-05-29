@@ -19,7 +19,9 @@ app.use(Morgan.errorHandler);
 //body parser
 app.use(
   cors({
-    origin: "*",
+    origin: ["https://joura.info", "http://localhost:3000"],
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+    
     credentials: true,
   })
 );
