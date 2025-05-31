@@ -118,6 +118,18 @@ const updateUserRole = catchAsync(async (req: Request, res: Response) => {
     data: user,
   });
 });
+const changeUserStatus = catchAsync(
+  async (req: Request, res: Response) => {
+    const userId = req.params.id;
+    const user = await UserServices.changeUserStatus(userId);
+    sendResponse(res, {
+      statusCode: StatusCodes.OK,
+      success: true,
+      message: "User status changed successfully",
+      data: user,
+    });
+  }
+);
 
 export const UserController = {
   createUser,
@@ -128,4 +140,5 @@ export const UserController = {
   updateUserRole,
   getMe,
   updateUserByToken,
+  changeUserStatus
 };

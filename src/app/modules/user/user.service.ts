@@ -47,9 +47,9 @@ const getMe = async (
   id: string
 ): Promise<Partial<TReturnUser.getSingleUser>> => {
   // console.log(id);
-if(!id) {
-  throw new AppError(StatusCodes.UNAUTHORIZED, "You are not authorized");
-}
+  if (!id) {
+    throw new AppError(StatusCodes.UNAUTHORIZED, "You are not authorized");
+  }
   // First, try to retrieve the user from cache.
   const cachedUser = await UserCacheManage.getCacheSingleUser(id);
   if (cachedUser) return cachedUser;
@@ -136,12 +136,28 @@ const updateUserRole = async (
   //remove cache
   await UserCacheManage.updateUserCache(id);
 
-
   return user;
 };
 
+const changeUserStatus=async(userId:string)=>{
+const user = await User.findById(userId);
+if (!user) {
+  throw new AppError(StatusCodes.NOT_FOUND, "User not found");
 
+}
+if(user.role==="ADMIN"){
+  throw new AppError(StatusCodes.BAD_REQUEST, "You can't change admin status");
+}
+  if(user.status==="active"){
+    user.status="delete";
+  }else{
+    user.status="active";
+  }
+  await user.save();
+  await UserCacheManage.updateUserCache(userId);
+  return user;
 
+}
 export const UserServices = {
   createUser,
   getAllUsers,
@@ -150,5 +166,6 @@ export const UserServices = {
   updateUserActivationStatus,
   updateUserRole,
   getMe,
-  updateUserByToken
+  updateUserByToken,
+  changeUserStatus
 };

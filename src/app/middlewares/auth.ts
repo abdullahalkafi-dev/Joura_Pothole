@@ -5,6 +5,7 @@ import config from "../../config";
 
 import { jwtHelper } from "../../helpers/jwtHelper";
 import AppError from "../errors/AppError";
+import { User } from "../modules/user/user.model";
 
 const auth =
   (...roles: string[]) =>
@@ -24,7 +25,17 @@ const auth =
         );
         //set user to header
         req.user = verifyUser;
-
+     const user = await User.isExistUserById(verifyUser.id);
+        if (!user) {
+          throw new AppError(StatusCodes.UNAUTHORIZED, "You are not authorized");
+        } 
+        //check if user is active
+        if (user.status !== "active") {
+          throw new AppError(
+            StatusCodes.UNAUTHORIZED,
+            "You account does not exist or is not active"
+          );
+        }
         //guard user
         if (roles.length && !roles.includes(verifyUser.role)) {
           throw new AppError(

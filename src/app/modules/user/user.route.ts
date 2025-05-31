@@ -41,6 +41,11 @@ router.patch(
   validateRequest(UserValidation.updateUser),
   UserController.updateUser
 );
+router.delete(
+  "/:id",
+  UserController.changeUserStatus
+);
+
 
 
 export const UserRoutes: Router = router;
