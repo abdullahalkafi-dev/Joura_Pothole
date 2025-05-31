@@ -139,25 +139,28 @@ const updateUserRole = async (
   return user;
 };
 
-const changeUserStatus=async(userId:string)=>{
-const user = await User.findById(userId);
-if (!user) {
-  throw new AppError(StatusCodes.NOT_FOUND, "User not found");
-
-}
-if(user.role==="ADMIN"){
-  throw new AppError(StatusCodes.BAD_REQUEST, "You can't change admin status");
-}
-  if(user.status==="active"){
-    user.status="delete";
-  }else{
-    user.status="active";
+const changeUserStatus = async (userId: string) => {
+  const user = await User.findById(userId);
+  if (!user) {
+    throw new AppError(StatusCodes.NOT_FOUND, "User not found");
   }
-  await user.save();
+  let status = user.status;
+  if (user.role === "ADMIN") {
+    throw new AppError(
+      StatusCodes.BAD_REQUEST,
+      "You can't change admin status"
+    );
+  }
+  if (user.status === "active") {
+    status = "delete";
+  } else {
+    status = "active";
+  }
+  await User.findByIdAndUpdate(userId, { status }, { new: true });
+  //remove cache
   await UserCacheManage.updateUserCache(userId);
   return user;
-
-}
+};
 export const UserServices = {
   createUser,
   getAllUsers,
@@ -167,5 +170,16 @@ export const UserServices = {
   updateUserRole,
   getMe,
   updateUserByToken,
-  changeUserStatus
+  changeUserStatus,
 };
+
+
+
+
+
+
+
+
+
+
+
