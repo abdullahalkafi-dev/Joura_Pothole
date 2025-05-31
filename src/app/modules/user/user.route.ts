@@ -42,7 +42,8 @@ router.patch(
   UserController.updateUser
 );
 router.delete(
-  "/:id",
+  "/delete",
+  auth(),
   UserController.changeUserStatus
 );
 
