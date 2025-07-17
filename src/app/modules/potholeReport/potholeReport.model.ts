@@ -50,7 +50,7 @@ const potholeReportSchema = new Schema<TPotholeReport, PotholeReportModel>(
     description: {
       type: String,
       trim: true,
-      minlength: [10, "Description must be at least 10 characters long"],
+      minlength: [5, "Description must be at least 10 characters long"],
       maxlength: [3000, "Description can't be more than 1000 characters"],
     },
     user: {

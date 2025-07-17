@@ -16,7 +16,7 @@ router.post(
   PotholeReportController.createPotholeReport
 );
 
-router.get("/", PotholeReportController.getAllReports);
+router.get("/", auth(), PotholeReportController.getAllReports);
 
   // router.get("/stats", PotholeReportController.getStats);
 router.patch(

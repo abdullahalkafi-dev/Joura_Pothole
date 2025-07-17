@@ -5,7 +5,6 @@ import PotholeReportCacheManage from "./potholeReport.cacheManage";
 import {
   TReturnPotholeReport,
   TPotholeReport,
-
 } from "./potholeReport.interface";
 import { PotholeReport } from "./potholeReport.model";
 import { User } from "../user/user.model";
@@ -13,6 +12,7 @@ import { User } from "../user/user.model";
 const createPotholeReport = async (
   reportData: TPotholeReport
 ): Promise<TReturnPotholeReport.createReport> => {
+  console.log(reportData, "reportData");
   const user = reportData.user;
   const isExistingUser = await User.isExistUserById(user.toString());
   if (!isExistingUser) {
@@ -25,12 +25,12 @@ const createPotholeReport = async (
       reportData.location.coordinates[1],
       reportData.issue
     );
-  // console.log(
-  //   isEligible,
-  //   existingReport,
-  //   daysSinceLastReport,
-  //   "isEligible, existingReport, daysSinceLastReport"
-  // );
+  console.log(
+    isEligible,
+    existingReport,
+    daysSinceLastReport,
+    "isEligible, existingReport, daysSinceLastReport"
+  );
 
   if (!isEligible && existingReport) {
     const daysLeft = 30 - daysSinceLastReport!;
@@ -46,12 +46,21 @@ const createPotholeReport = async (
 };
 
 const getAllReports = async (
-  query: Record<string, unknown>
+  query: Record<string, unknown>,
+  user: any
 ): Promise<TReturnPotholeReport.getAllReports> => {
-  // const cached = await PotholeReportCacheManage.getCacheListWithQuery(query);
-  // if (cached) return cached;
 
-  const reportQuery = new QueryBuilder(PotholeReport.find(), query)
+  const cached = await PotholeReportCacheManage.getCacheListWithQuery(query);
+  if (cached) return cached;
+
+  let baseQuery = PotholeReport.find();
+  
+  // Filter out resolved and rejected reports for regular users
+  if (user.role === "USER") {
+    baseQuery = baseQuery.where({ status: { $nin: ["resolved", "rejected"] } });
+  }
+
+  const reportQuery = new QueryBuilder(baseQuery, query)
     .search(["description", "location.address"])
     .filter()
     .sort()
@@ -61,13 +70,15 @@ const getAllReports = async (
   const result = await reportQuery.modelQuery;
   const meta = await reportQuery.countTotal();
 
-  // await PotholeReportCacheManage.setCacheListWithQuery(query, { result, meta });
+  await PotholeReportCacheManage.setCacheListWithQuery(query, { result, meta });
   return { result, meta };
 };
 
 const getReportById = async (
   id: string
-): Promise<TReturnPotholeReport.getSingleReport & {potholeVerification:any}> => {
+): Promise<
+  TReturnPotholeReport.getSingleReport & { potholeVerification: any }
+> => {
   // console.log(id, "id");
   const report = await PotholeReport.findById(id).populate("user").lean();
   if (!report) {
@@ -78,8 +89,10 @@ const getReportById = async (
   const potholeVerification = await PotholeReport.find({
     user: userId,
     potholeId: id,
-  }).select("userId").lean();
-return { ...report, potholeVerification };
+  })
+    .select("userId")
+    .lean();
+  return { ...report, potholeVerification };
 };
 
 const updateReport = async (
@@ -137,7 +150,6 @@ const getMyReports = async (
     user: userId,
   };
 
-
   const reportQuery = new QueryBuilder(
     PotholeReport.find({ user: userId }),
     query
@@ -153,7 +165,7 @@ const getMyReports = async (
 
   return { result, meta };
 };
-const getStats = async()=>{
+const getStats = async () => {
   const totalReports = await PotholeReport.countDocuments();
   const totalResolved = await PotholeReport.countDocuments({
     status: "resolved",
@@ -164,15 +176,15 @@ const getStats = async()=>{
   const totalRejected = await PotholeReport.countDocuments({
     status: "rejected",
   });
-  const analyticsData= [
+  const analyticsData = [
     {
       name: "totalReports",
       value: totalReports,
     },
-     {
+    {
       name: "open",
       value: totalReports - (totalResolved + totalInProgress + totalRejected),
-     },
+    },
     {
       name: "resolved",
       value: totalResolved,
@@ -188,7 +200,7 @@ const getStats = async()=>{
   ];
 
   return analyticsData;
-}
+};
 
 export const PotholeReportServices = {
   createPotholeReport,
@@ -198,5 +210,5 @@ export const PotholeReportServices = {
   updateReportStatus,
   getNearbyReports,
   getMyReports,
-  getStats
+  getStats,
 };

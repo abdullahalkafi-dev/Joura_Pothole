@@ -39,8 +39,9 @@ const createPotholeReport = catchAsync(
 
 const getAllReports = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    const result = await PotholeReportServices.getAllReports(req.query);
-
+    const user = req.user;
+    const result = await PotholeReportServices.getAllReports(req.query, user);
+   
     sendResponse(res, {
       statusCode: StatusCodes.OK,
       success: true,

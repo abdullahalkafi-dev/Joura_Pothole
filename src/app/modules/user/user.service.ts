@@ -6,7 +6,18 @@ import { TReturnUser, TUser } from "./user.interface";
 import { User } from "./user.model";
 
 const createUser = async (user: TUser): Promise<Partial<TUser>> => {
+  // Check if the user already exists
+  const existingUser = await User.findOne({ email: user.email });
+  if (existingUser) {
+    throw new AppError(
+      StatusCodes.BAD_REQUEST,
+      "User with this email already exists"
+    );
+  }
   const newUser = await User.create(user);
+  if (!newUser) {
+    throw new AppError(StatusCodes.BAD_REQUEST, "User creation failed");
+  }
   await UserCacheManage.updateUserCache(newUser._id.toString());
   return newUser;
 };
