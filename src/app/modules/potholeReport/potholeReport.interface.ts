@@ -17,15 +17,6 @@ export type TPotholeReport = {
   updatedAt: Date;
 };
 
-
-
-
-
-
-
-
-
-
 export interface PotholeReportModel extends Model<TPotholeReport> {
   isExistReportById(id: string): Promise<TPotholeReport | null>;
   findReportsNearLocation(

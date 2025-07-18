@@ -81,19 +81,6 @@ const potholeReportSchema = new Schema<TPotholeReport, PotholeReportModel>(
   },
   {
     timestamps: true,
-    toJSON: {
-      virtuals: true,
-      transform: (doc, ret) => {
-        delete ret.id;
-        // Convert back to latitude/longitude for API responses
-        ret.location = {
-          address: ret.location.address,
-          latitude: ret.location.coordinates[1],
-          longitude: ret.location.coordinates[0],
-        };
-        return ret;
-      },
-    },
     versionKey: false,
   }
 );

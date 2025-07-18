@@ -49,7 +49,7 @@
 		"prettier:check": "prettier --ignore-path .gitignore --write \"**/*.+(js|ts|json)\"",
 		"prettier:fix": "prettier --write .",
 		"test": "echo \"Error: no test specified\" && exit 1",
-		 "build": "tsc",     
+		"build": "tsc",
 		"start": "node dist/server.js"
 	},
 	"repository": {

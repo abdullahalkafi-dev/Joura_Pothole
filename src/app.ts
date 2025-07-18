@@ -3,7 +3,6 @@ import express, { Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 import globalErrorHandler from "./app/middlewares/globalErrorHandler";
 import router from "./routes";
-import http from "http";
 import cookieParser from "cookie-parser";
 import { Morgan } from "./shared/morgen";
 // import admin from 'firebase-admin';

@@ -49,8 +49,9 @@ const getAllReports = async (
   query: Record<string, unknown>,
   user: any
 ): Promise<TReturnPotholeReport.getAllReports> => {
+  console.log(user, "user in getAllReports");
+  const cached = await PotholeReportCacheManage.getCacheListWithQuery({userId: user.id.toString(), ...query});
 
-  const cached = await PotholeReportCacheManage.getCacheListWithQuery(query);
   if (cached) return cached;
 
   let baseQuery = PotholeReport.find();
@@ -61,7 +62,7 @@ const getAllReports = async (
   }
 
   const reportQuery = new QueryBuilder(baseQuery, query)
-    .search(["description", "location.address"])
+    .search(["description"])
     .filter()
     .sort()
     .paginate()
@@ -70,7 +71,7 @@ const getAllReports = async (
   const result = await reportQuery.modelQuery;
   const meta = await reportQuery.countTotal();
 
-  await PotholeReportCacheManage.setCacheListWithQuery(query, { result, meta });
+  await PotholeReportCacheManage.setCacheListWithQuery({userId: user.id.toString(), ...query}, { result, meta });
   return { result, meta };
 };
 
@@ -78,7 +79,7 @@ const getReportById = async (
   id: string
 ): Promise<
   TReturnPotholeReport.getSingleReport & { potholeVerification: any }
-> => {
+> => {  
   // console.log(id, "id");
   const report = await PotholeReport.findById(id).populate("user").lean();
   if (!report) {
@@ -154,7 +155,7 @@ const getMyReports = async (
     PotholeReport.find({ user: userId }),
     query
   )
-    .search(["description", "location.address"])
+    .search(["description"])
     .filter()
     .sort()
     .paginate()
