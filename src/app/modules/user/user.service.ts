@@ -4,6 +4,10 @@ import AppError from "../../errors/AppError";
 import UserCacheManage from "./user.cacheManage";
 import { TReturnUser, TUser } from "./user.interface";
 import { User } from "./user.model";
+import generateOTP from "../../../util/generateOTP";
+import { emailTemplate } from "../../../shared/emailTemplate";
+import { emailHelper } from "../../../helpers/emailHelper";
+import { AuthService } from "../auth/auth.service";
 
 const createUser = async (user: TUser): Promise<Partial<TUser>> => {
   // Check if the user already exists
@@ -18,6 +22,23 @@ const createUser = async (user: TUser): Promise<Partial<TUser>> => {
   if (!newUser) {
     throw new AppError(StatusCodes.BAD_REQUEST, "User creation failed");
   }
+  //send mail
+  const otp = generateOTP();
+  console.log(otp, "otp");
+  const value = {
+    otp,
+    email: newUser.email,
+    name: newUser.firstName!,
+    theme: "theme-blue" as
+      | "theme-green"
+      | "theme-red"
+      | "theme-purple"
+      | "theme-orange"
+      | "theme-blue",
+    expiresIn: 30,
+  };
+  await AuthService.resendOtp(user.email);
+
   await UserCacheManage.updateUserCache(newUser._id.toString());
   return newUser;
 };
@@ -183,14 +204,3 @@ export const UserServices = {
   updateUserByToken,
   changeUserStatus,
 };
-
-
-
-
-
-
-
-
-
-
-

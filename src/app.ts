@@ -16,15 +16,15 @@ app.use(Morgan.errorHandler);
 //   credential: admin.credential.cert(ServiceAccount as admin.ServiceAccount),
 // });
 //body parser
+
 app.use(
   cors({
-    origin: ["https://joura.info", "http://localhost:3000"],
+    origin: ["https://joura.info", "http://localhost:3000", "http://10.10.12.125:3000", "http://localhost:3001"],
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
     
     credentials: true,
   })
 );
-
 app.use(express.json());
 app.use(cookieParser());
 

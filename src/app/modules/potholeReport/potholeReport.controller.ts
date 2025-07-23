@@ -176,7 +176,53 @@ const getStats = catchAsync(
     });
   }
 );
+const deletePotholeReport = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const { id } = req.params;
 
+    await PotholeReportServices.deletePotholeReport(id);
+
+    sendResponse(res, {
+      statusCode: StatusCodes.OK,
+      success: true,
+      message: "Report deleted successfully",
+    });
+  }
+);
+const bulkDeletePotholeReports = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const { ids } = req.body;
+
+    if (!ids || !Array.isArray(ids)) {
+      throw new AppError(StatusCodes.BAD_REQUEST, "Invalid request data");
+    }
+
+    await PotholeReportServices.bulkDeletePotholeReports(ids);
+
+    sendResponse(res, {
+      statusCode: StatusCodes.OK,
+      success: true,
+      message: "Reports deleted successfully",
+    });
+  }
+);
+const bulkUpdateReportStatus = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const { ids, status } = req.body;
+
+    if (!ids || !Array.isArray(ids) || !status) {
+      throw new AppError(StatusCodes.BAD_REQUEST, "Invalid request data");
+    }
+
+    await PotholeReportServices.bulkUpdateReportStatus(ids, status);
+
+    sendResponse(res, {
+      statusCode: StatusCodes.OK,
+      success: true,
+      message: "Reports status updated successfully",
+    });
+  }
+);
 
 export const PotholeReportController = {
   createPotholeReport,
@@ -187,4 +233,7 @@ export const PotholeReportController = {
   getNearbyReports,
   getMyReports,
   getStats,
+  deletePotholeReport,
+  bulkDeletePotholeReports,
+  bulkUpdateReportStatus,
 };

@@ -10,6 +10,7 @@ import { errorLogger, logger } from './shared/logger';
 import redisClient from './util/redisClient';
 import app from './app';
 import config from './config';
+import seedSuperAdmin from './DB';
 
 //uncaught exception
 process.on('uncaughtException', error => {
@@ -19,7 +20,7 @@ process.on('uncaughtException', error => {
 export const server = http.createServer(app);
 async function main() {
   try {
-    // seedSuperAdmin();
+    seedSuperAdmin();
     mongoose.connect(config.database_url as string);
     logger.info(colors.green('🚀 Database connected successfully'));
 

@@ -14,9 +14,13 @@ router.post(
   validateRequest(UserValidation.createUser),
   UserController.createUser
 );
-router.get("/",auth(USER_ROLES.ADMIN), UserController.getAllUsers);
+router.get(
+  "/",
+  auth(USER_ROLES.ADMIN, USER_ROLES.USER),
+  UserController.getAllUsers
+);
 
-router.get("/getme",auth(), UserController.getMe);
+router.get("/getme", auth(), UserController.getMe);
 router.get("/:id", UserController.getUserById);
 router.patch(
   "/",
@@ -42,12 +46,6 @@ router.patch(
   validateRequest(UserValidation.updateUser),
   UserController.updateUser
 );
-router.delete(
-  "/delete",
-  auth(),
-  UserController.changeUserStatus
-);
-
-
+router.delete("/delete", auth(), UserController.changeUserStatus);
 
 export const UserRoutes: Router = router;

@@ -18,7 +18,7 @@ const potholeReportSchema = new Schema<TPotholeReport, PotholeReportModel>(
         values: ["Mild", "Moderate", "Severe"],
         message: "{VALUE} is not a valid severity level",
       },
-    
+
       required: [true, "Severity level is required"],
     },
     location: {
@@ -120,6 +120,8 @@ potholeReportSchema.statics.findReportsNearLocation = async function (
         $maxDistance: maxDistance,
       },
     },
+
+    status: { $nin: ["resolved", "rejected"] },
   });
 };
 
@@ -129,13 +131,6 @@ potholeReportSchema.statics.checkReportEligibility = async function (
   issue: string,
   maxDistance = 10
 ) {
-  // console.log(
-  //   latitude,
-  //   longitude,
-  //   issue,
-  //   maxDistance,
-  //   "checkReportEligibility"
-  // );
   const existingReport = await this.findOne({
     issue,
     "location.coordinates": {

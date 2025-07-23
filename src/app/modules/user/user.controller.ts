@@ -56,8 +56,8 @@ const updateUser = catchAsync(async (req: Request, res: Response) => {
   if (user.image === null) {
     delete user.image;
   }
-  
- const id = req.params.id;
+
+  const id = req.params.id;
   const result = await UserServices.updateUser(id, user);
   sendResponse(res, {
     statusCode: StatusCodes.OK,
@@ -80,7 +80,7 @@ const updateUserByToken = catchAsync(async (req: Request, res: Response) => {
     delete user.image;
   }
 
- const id = req.user.id
+  const id = req.user.id;
   const result = await UserServices.updateUserByToken(id, user);
   sendResponse(res, {
     statusCode: StatusCodes.OK,
@@ -118,18 +118,16 @@ const updateUserRole = catchAsync(async (req: Request, res: Response) => {
     data: user,
   });
 });
-const changeUserStatus = catchAsync(
-  async (req: Request, res: Response) => {
-    const userId = req.user.id;
-    const user = await UserServices.changeUserStatus(userId);
-    sendResponse(res, {
-      statusCode: StatusCodes.OK,
-      success: true,
-      message: "User status changed successfully",
-      data: user,
-    });
-  }
-);
+const changeUserStatus = catchAsync(async (req: Request, res: Response) => {
+  const userId = req.user.id;
+  const user = await UserServices.changeUserStatus(userId);
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: "User status changed successfully",
+    data: user,
+  });
+});
 
 export const UserController = {
   createUser,
@@ -140,5 +138,5 @@ export const UserController = {
   updateUserRole,
   getMe,
   updateUserByToken,
-  changeUserStatus
+  changeUserStatus,
 };

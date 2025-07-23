@@ -8,6 +8,7 @@ import {
 } from "./potholeReport.interface";
 import { PotholeReport } from "./potholeReport.model";
 import { User } from "../user/user.model";
+import { PotholeVerification } from "../potholeVerification/potholeVerification.model";
 
 const createPotholeReport = async (
   reportData: TPotholeReport
@@ -50,12 +51,15 @@ const getAllReports = async (
   user: any
 ): Promise<TReturnPotholeReport.getAllReports> => {
   console.log(user, "user in getAllReports");
-  const cached = await PotholeReportCacheManage.getCacheListWithQuery({userId: user.id.toString(), ...query});
+  const cached = await PotholeReportCacheManage.getCacheListWithQuery({
+    userId: user.id.toString(),
+    ...query,
+  });
 
   if (cached) return cached;
 
   let baseQuery = PotholeReport.find();
-  
+
   // Filter out resolved and rejected reports for regular users
   if (user.role === "USER") {
     baseQuery = baseQuery.where({ status: { $nin: ["resolved", "rejected"] } });
@@ -71,7 +75,10 @@ const getAllReports = async (
   const result = await reportQuery.modelQuery;
   const meta = await reportQuery.countTotal();
 
-  await PotholeReportCacheManage.setCacheListWithQuery({userId: user.id.toString(), ...query}, { result, meta });
+  await PotholeReportCacheManage.setCacheListWithQuery(
+    { userId: user.id.toString(), ...query },
+    { result, meta }
+  );
   return { result, meta };
 };
 
@@ -79,7 +86,7 @@ const getReportById = async (
   id: string
 ): Promise<
   TReturnPotholeReport.getSingleReport & { potholeVerification: any }
-> => {  
+> => {
   // console.log(id, "id");
   const report = await PotholeReport.findById(id).populate("user").lean();
   if (!report) {
@@ -129,6 +136,27 @@ const updateReportStatus = async (
 
   await PotholeReportCacheManage.updateReportCache(id);
   return report;
+};
+
+const bulkUpdateReportStatus = async (
+  ids: string[],
+  status: "open" | "in progress" | "resolved" | "rejected"
+) => {
+  const reports = await PotholeReport.updateMany(
+    { _id: { $in: ids } },
+    { status },
+    { new: true }
+  );
+
+  if (reports.modifiedCount === 0) {
+    throw new AppError(StatusCodes.NOT_FOUND, "No reports found to update");
+  }
+
+  for (const id of ids) {
+    await PotholeReportCacheManage.updateReportCache(id);
+  }
+
+  return reports;
 };
 
 const getNearbyReports = async (
@@ -203,6 +231,28 @@ const getStats = async () => {
   return analyticsData;
 };
 
+const deletePotholeReport = async (id: string): Promise<void> => {
+  const report = await PotholeReport.findByIdAndDelete(id);
+  if (!report) {
+    throw new AppError(StatusCodes.NOT_FOUND, "Report not found");
+  }
+  await PotholeVerification.deleteMany({ potholeId: id });
+
+  await PotholeReportCacheManage.updateReportCache(id);
+  return;
+};
+const bulkDeletePotholeReports = async (ids: string[]): Promise<void> => {
+  const reports = await PotholeReport.deleteMany({ _id: { $in: ids } });
+  if (reports.deletedCount === 0) {
+    throw new AppError(StatusCodes.NOT_FOUND, "No reports found to delete");
+  }
+  await PotholeVerification.deleteMany({ potholeId: { $in: ids } });
+
+  for (const id of ids) {
+    await PotholeReportCacheManage.updateReportCache(id);
+  }
+};
+
 export const PotholeReportServices = {
   createPotholeReport,
   getAllReports,
@@ -212,4 +262,7 @@ export const PotholeReportServices = {
   getNearbyReports,
   getMyReports,
   getStats,
+  deletePotholeReport,
+  bulkDeletePotholeReports,
+  bulkUpdateReportStatus
 };

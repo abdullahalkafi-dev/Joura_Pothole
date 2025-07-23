@@ -18,7 +18,13 @@ router.post(
 
 router.get("/", auth(), PotholeReportController.getAllReports);
 
-  // router.get("/stats", PotholeReportController.getStats);
+// router.get("/stats", PotholeReportController.getStats);
+router.patch(
+  "/bulk-update-status",
+  auth(USER_ROLES.ADMIN),
+  PotholeReportController.bulkUpdateReportStatus
+);
+
 router.patch(
   "/:id",
   auth(USER_ROLES.ADMIN),
@@ -26,6 +32,7 @@ router.patch(
   validateRequest(PotholeReportValidation.updateReportValidation),
   PotholeReportController.updateReport
 );
+
 
 router.patch(
   "/:id/status",
@@ -39,5 +46,14 @@ router.get("/nearby", PotholeReportController.getNearbyReports);
 router.get("/my-reports", auth(), PotholeReportController.getMyReports);
 router.get("/stats", PotholeReportController.getStats);
 router.get("/:id", PotholeReportController.getReportById);
-
+router.delete(
+  "/bulk-delete",
+  auth(USER_ROLES.ADMIN),
+  PotholeReportController.bulkDeletePotholeReports
+);
+router.delete(
+  "/:id",
+  auth(USER_ROLES.ADMIN),
+  PotholeReportController.deletePotholeReport
+);
 export const PotholeReportRoutes: Router = router;
