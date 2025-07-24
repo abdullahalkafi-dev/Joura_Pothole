@@ -12,10 +12,10 @@ const auth =
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const tokenWithBearer = req.headers.authorization;
-      if (!tokenWithBearer) {
+
+       if (!tokenWithBearer) {
         throw new AppError(StatusCodes.UNAUTHORIZED, "You are not authorized");
       }
-
       if (tokenWithBearer && tokenWithBearer.startsWith("Bearer")) {
         const token = tokenWithBearer.split(" ")[1];
         //verify token

@@ -22,8 +22,7 @@ const createReportValidation = z.object({
     }),
     description: z
       .string()
-      .min(5, "Description must be at least 10 characters long")
-      .max(3000, "Description can't be more than 1000 characters").optional(),
+      .optional(),
     user: z.string().nonempty("User ID is required"),
   }),
 });
@@ -55,9 +54,8 @@ const updateReportValidation = z.object({
       })
       .optional(),
     description: z
-      .string()
-      .min(5, "Description must be at least 10 characters long")
-      .max(3000, "Description can't be more than 1000 characters"),
+      .string().optional()
+     ,
     status: z
       .enum(["open", "in progress", "resolved", "rejected"], {
         required_error: "Status is required",

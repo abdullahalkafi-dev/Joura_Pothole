@@ -58,10 +58,7 @@ const userSchema = new Schema<TUser, UserModal>(
     },
     phoneNumber: {
       type: String,
-      unique: true,
-      trim: true,
-      sparse: true, // This prevents duplicate "" or null errors
-   
+      trim: true,   
     },
     image: {
       type: String,
@@ -140,10 +137,7 @@ userSchema.statics.isExistUserByEmail = async (email: string) => {
   return isExist;
 };
 
-userSchema.statics.isExistUserByPhnNum = async (phoneNumber: string) => {
-  const isExist = await User.findOne({ phoneNumber });
-  return isExist;
-};
+
 
 //is match password
 userSchema.statics.isMatchPassword = async (

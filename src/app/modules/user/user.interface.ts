@@ -23,7 +23,6 @@ export type TUser = {
 export type UserModal = {
   isExistUserById(id: string): any;
   isExistUserByEmail(email: string): any;
-  isExistUserByPhnNum(phnNum: string): any;
   isMatchPassword(password: string, hashPassword: string): boolean;
   isJWTIssuedBeforePasswordChanged(
     passwordChangedTimestamp: Date,

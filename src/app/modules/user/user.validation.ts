@@ -22,6 +22,9 @@ const createUser = z.object({
         .min(6, "Password must be at least 6 characters long")
         .max(100, "Password is too long")
         .trim(),
+      phoneNumber: z
+        .string()
+        .optional()
     })
     .strict(),
 });
