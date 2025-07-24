@@ -2,13 +2,14 @@ FROM node:22.13.0
 
 WORKDIR /app
 
-COPY package.json  pnpm-lock.yaml ./
+COPY package.json pnpm-lock.yaml ./
 
-RUN  npm install -g pnpm && pnpm install
+RUN npm install -g pnpm && pnpm install --frozen-lockfile
 
 COPY . .
 
+RUN pnpm build
+
 EXPOSE 5006
 
-# Build or run your app
-CMD ["pnpm","run","dev"]
+CMD ["pnpm", "start"]
